@@ -1,0 +1,16 @@
+[package]
+name = "synapse-bridge"
+version = "0.1.0"
+edition = "2021"
+description = "Cross-platform C-ABI FFI bridge for synapse-store and synapse-search"
+license = "MIT"
+readme = "../README.md"
+keywords = ["ffi", "bindings", "c-abi", "interop", "go"]
+categories = ["api-bindings", "development-tools::ffi"]
+
+[lib]
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[dependencies]
+synapse-store = { path = "../synapse-store" }
+synapse-search = { path = "../synapse-search" }

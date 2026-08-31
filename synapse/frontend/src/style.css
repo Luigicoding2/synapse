@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cyber-bg: #000000;
+  --color-cyber-panel: #07080c;
+  --color-cyber-accent: #0066ff;
+  --color-cyber-text: #f1f5f9;
+  --color-cyber-muted: #64748b;
+  --color-cyber-success: #00b0ff;
+  --color-cyber-warn: #38bdf8;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    color: #f1f5f9;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    overflow: hidden;
+}
+
+#app {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Premium micro-scrollbar for details and code viewer */
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+::-webkit-scrollbar-track {
+    background: #000000;
+}
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #0066ff;
+}
+
+/* Custom glowing effects for headers and buttons */
+.btn-premium {
+    position: relative;
+    transition: all 0.2s ease-in-out;
+}
+.btn-premium::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(90deg, #0066ff, #00b0ff);
+    z-index: -1;
+    opacity: 0.3;
+    transition: opacity 0.2s ease-in-out;
+}
+.btn-premium:hover::after {
+    opacity: 1;
+}

@@ -1,0 +1,11 @@
+[package]
+name = "synapse-store"
+version = "0.1.0"
+edition = "2021"
+description = "Embedded high-performance LSM-Tree Key-Value database engine in pure Rust"
+license = "MIT"
+readme = "../README.md"
+keywords = ["database", "lsm-tree", "key-value", "embedded", "storage"]
+categories = ["database-implementations", "data-structures", "embedded-programming"]
+
+[dependencies]

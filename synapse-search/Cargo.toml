@@ -1,0 +1,11 @@
+[package]
+name = "synapse-search"
+version = "0.1.0"
+edition = "2021"
+description = "In-memory fuzzy search, prefix autocomplete, and TF-IDF relevance ranking engine"
+license = "MIT"
+readme = "../README.md"
+keywords = ["search", "fuzzy", "autocomplete", "trie", "levenshtein"]
+categories = ["algorithms", "text-processing", "data-structures"]
+
+[dependencies]

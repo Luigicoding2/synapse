@@ -1,0 +1,8 @@
+[package]
+name = "rust-demo"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+synapse-store = { path = "../../synapse-store" }
+synapse-search = { path = "../../synapse-search" }

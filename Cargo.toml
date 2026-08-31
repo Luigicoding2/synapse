@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "synapse-store",
+    "synapse-search",
+    "synapse-bridge",
+    "examples/rust_demo",
+]
+resolver = "2"

@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-rust:
+    name: Rust Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Run Rust Workspace Tests
+        run: cargo test --workspace --verbose
+
+      - name: Build Release Artifacts
+        run: cargo build --release
+
+  test-go:
+    name: Go Tests (${{ matrix.os }})
+    needs: test-rust
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Build Rust Bridge Libs
+        run: cargo build --release
+
+      - name: Run Go Tests & Benchmarks
+        working-directory: ./bindings
+        run: |
+          go test -v .
+          go test -bench=. -benchmem .

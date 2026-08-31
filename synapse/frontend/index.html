@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Synapse - Codebase Visualizer</title>
+</head>
+<body class="h-full bg-cyber-bg text-cyber-text select-none overflow-hidden font-mono">
+    
+    <div id="app" class="flex flex-col h-full w-full bg-[#000000]">
+        <!-- HEADER -->
+        <header class="flex items-center justify-between px-6 py-2.5 bg-[#000000] border-b border-[#101424] z-10">
+            <div class="flex items-center space-x-3">
+                <div class="w-7 h-7 bg-cyber-accent flex items-center justify-center font-bold text-white shadow-lg border border-[#00b0ff]/30 text-sm">
+                    S
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold tracking-widest text-white">SYNAPSE</h1>
+                    <span class="text-[9px] text-cyber-muted tracking-widest uppercase">AI Codebase Map</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center max-w-xl mx-4 px-3 py-1 bg-[#050609] border border-[#101424] flex-1">
+                <span class="text-[10px] text-cyber-muted mr-2 font-semibold">Active Folder:</span>
+                <span id="active-path-display" class="text-[10px] text-[#00b0ff] truncate font-mono">None Selected</span>
+            </div>
+
+            <div class="flex items-center space-x-2.5">
+                <button id="btn-select-dir" class="px-4 py-1 bg-[#0066ff] hover:bg-transparent hover:text-[#0066ff] border border-[#0066ff] text-white text-[10px] font-bold rounded-none transition-all flex items-center space-x-1.5 cursor-pointer">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                    <span>OPEN FOLDER</span>
+                </button>
+                
+                <button id="btn-settings" class="p-1.5 bg-black hover:bg-[#0066ff] hover:text-white active:scale-95 border border-[#101424] text-cyber-muted transition-all cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT -->
+        <main class="flex flex-1 relative overflow-hidden">
+            
+            <!-- LEFT WORKSPACE: GRAPH VISUALIZER -->
+            <section class="flex-1 h-full relative bg-[#000000]">
+                <!-- Graph Render Area -->
+                <div id="graph-container" class="w-full h-full"></div>
+                
+                <!-- Initial Landing State -->
+                <div id="landing-overlay" class="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-95 z-20 transition-all duration-300">
+                    <div class="max-w-md text-center p-8 border border-[#101424] rounded-none bg-[#050609] shadow-2xl">
+                        <div class="w-14 h-14 mx-auto mb-6 bg-[#0066ff] rounded-none flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-blue-900/20 border border-[#00b0ff]/30">
+                            S
+                        </div>
+                        <h2 class="text-sm font-bold text-white mb-2 uppercase tracking-widest">Welcome to Synapse</h2>
+                        <p class="text-[10px] text-cyber-muted mb-6 leading-relaxed">
+                            A high-performance visualizer and AI companion. Open a local workspace directory to map files, dependencies, and inspect architecture in real-time.
+                        </p>
+                        <button id="btn-select-dir-landing" class="w-full py-2 bg-[#0066ff] hover:bg-transparent hover:text-[#0066ff] border border-[#0066ff] text-white text-[10px] font-bold rounded-none shadow-lg transition-all font-mono cursor-pointer">
+                            SELECT DIRECTORY
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loading-overlay" class="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-90 z-20 hidden">
+                    <div class="text-center">
+                        <div class="w-10 h-10 border-2 border-t-cyber-accent border-r-transparent border-b-[#101424] border-l-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                        <h3 class="text-xs font-bold text-white uppercase tracking-wider">Scanning Codebase...</h3>
+                        <p class="text-[9px] text-cyber-muted mt-1 font-mono">Executing Rust synapse-core scanner</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT PANEL: DASHBOARD / CODE DETAILS + CHAT -->
+            <section id="side-panel" class="w-96 h-full bg-[#050609] border-l border-[#101424] flex flex-col z-10 transition-all duration-300">
+                <!-- PANEL: GENERAL DASHBOARD (Visible when no file selected) -->
+                <div id="panel-dashboard" class="flex flex-col h-full overflow-y-auto p-5">
+                    <h3 class="text-[10px] font-bold text-cyber-muted tracking-wider uppercase mb-4 border-b border-[#101424] pb-2">Codebase Overview</h3>
+                    
+                    <div class="grid grid-cols-2 gap-3 mb-6">
+                        <div class="bg-black p-3 rounded-none border border-[#101424] text-center">
+                            <span class="text-[9px] text-cyber-muted block uppercase tracking-wider">Total Files</span>
+                            <span id="stat-total-files" class="text-xl font-bold text-white font-mono">-</span>
+                        </div>
+                        <div class="bg-black p-3 rounded-none border border-[#101424] text-center">
+                            <span class="text-[9px] text-cyber-muted block uppercase tracking-wider">Lines of Code</span>
+                            <span id="stat-total-lines" class="text-xl font-bold text-white font-mono">-</span>
+                        </div>
+                    </div>
+
+                    <h4 class="text-[9px] font-bold uppercase text-cyber-muted mb-2.5 tracking-widest">Languages Distribution</h4>
+                    <div id="languages-list" class="space-y-2 mb-6">
+                        <span class="text-[10px] text-cyber-muted italic">No stats available. Scan a folder.</span>
+                    </div>
+
+                    <h4 class="text-[9px] font-bold uppercase text-cyber-muted mb-2.5 tracking-widest">Active Workspace Info</h4>
+                    <div class="text-[9px] text-cyber-muted leading-relaxed font-mono space-y-1.5 bg-black p-3 rounded-none border border-[#101424]">
+                        <div><span class="text-[#0066ff]">Scanned At:</span> <span id="stat-scanned-time">-</span></div>
+                        <div class="truncate"><span class="text-[#0066ff]">Root Path:</span> <span id="stat-root-path">-</span></div>
+                    </div>
+                </div>
+
+                <!-- PANEL: ACTIVE NODE INFO & CHAT (Visible when node selected) -->
+                <div id="panel-node" class="flex flex-col h-full hidden">
+                    <!-- File Header -->
+                    <div class="p-3 bg-black border-b border-[#101424] flex items-center justify-between">
+                        <div class="flex items-center space-x-2.5 truncate">
+                            <div id="active-file-lang-dot" class="w-2 h-2 bg-gray-500"></div>
+                            <div class="truncate">
+                                <h3 id="active-file-name" class="text-[11px] font-bold text-white truncate font-mono">main.rs</h3>
+                                <p id="active-file-path" class="text-[9px] text-cyber-muted truncate font-mono">src/main.rs</p>
+                            </div>
+                        </div>
+                        <button id="btn-close-node" class="text-cyber-muted hover:text-white p-1 hover:bg-[#101424] rounded-none transition cursor-pointer">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- File Details Stats Grid -->
+                    <div class="grid grid-cols-3 bg-[#030406] border-b border-[#101424] text-center text-[9px] py-1.5">
+                        <div class="border-r border-[#101424]">
+                            <span class="text-cyber-muted block">Lines</span>
+                            <span id="node-stat-lines" class="font-bold text-white font-mono">-</span>
+                        </div>
+                        <div class="border-r border-[#101424]">
+                            <span class="text-cyber-muted block">Size</span>
+                            <span id="node-stat-size" class="font-bold text-white font-mono">-</span>
+                        </div>
+                        <div>
+                            <span class="text-cyber-muted block">Language</span>
+                            <span id="node-stat-lang" class="font-bold text-white uppercase font-mono">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Tabs Selector (Code Viewer / AI Assistant) -->
+                    <div class="flex bg-black border-b border-[#101424] text-[10px] font-bold">
+                        <button id="tab-code" class="flex-1 py-2 text-center text-white border-b border-[#0066ff] bg-[#050609] focus:outline-none cursor-pointer">
+                            CODE VIEW
+                        </button>
+                        <button id="tab-chat" class="flex-1 py-2 text-center text-cyber-muted hover:text-white border-b border-transparent hover:bg-[#030406] focus:outline-none cursor-pointer">
+                            AI ASSISTANT
+                        </button>
+                    </div>
+
+                    <!-- Tab Container: Code Viewer -->
+                    <div id="tab-content-code" class="flex-1 overflow-auto p-3 font-mono text-[9px] bg-black">
+                        <pre class="w-full text-left text-cyber-muted whitespace-pre"><code id="code-content-pre" class="block select-text overflow-x-auto">Loading code content...</code></pre>
+                    </div>
+
+                    <!-- Tab Container: AI Chat -->
+                    <div id="tab-content-chat" class="flex-1 flex flex-col bg-black hidden">
+                        <!-- Message Thread -->
+                        <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-3 font-mono text-[10px]">
+                            <div class="bg-[#050609] p-2.5 rounded-none border border-[#101424] leading-relaxed">
+                                <span class="text-cyber-success font-bold block text-[9px] mb-1">SYSTEM:</span>
+                                Welcome to the AI assistant. Click a file on the map to ask questions, explain code architecture, or suggest refactors.
+                            </div>
+                        </div>
+                        
+                        <!-- Input Bar -->
+                        <div class="p-3 bg-[#050609] border-t border-[#101424] flex items-center space-x-2">
+                            <input id="chat-input-text" type="text" placeholder="Ask Synapse..." class="flex-1 bg-black border border-[#101424] rounded-none px-3 py-1.5 text-[10px] text-white placeholder-cyber-muted focus:outline-none focus:border-[#0066ff] font-mono" />
+                            <button id="btn-chat-send" class="p-1.5 bg-[#0066ff] hover:bg-transparent hover:text-[#0066ff] border border-[#0066ff] text-white rounded-none active:scale-95 transition-all cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- SETTINGS MODAL DIALOG -->
+    <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300 hidden">
+        <div class="w-96 p-6 border border-[#101424] rounded-none bg-[#050609] shadow-2xl">
+            <div class="flex items-center justify-between border-b border-[#101424] pb-3 mb-4">
+                <h3 class="text-xs font-bold text-white flex items-center space-x-2 tracking-wider">
+                    <svg class="w-4 h-4 text-[#0066ff]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                    <span>LLM CONFIGURATION</span>
+                </h3>
+                <button id="btn-close-settings" class="text-cyber-muted hover:text-white p-0.5 hover:bg-[#101424] rounded-none transition cursor-pointer">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div class="space-y-4 text-[10px]">
+                <!-- Provider Selector -->
+                <div>
+                    <label class="block text-cyber-muted mb-1.5 font-bold">LLM PROVIDER</label>
+                    <select id="settings-provider" class="w-full bg-black border border-[#101424] rounded-none px-2.5 py-1.5 text-white focus:outline-none focus:border-[#0066ff]">
+                        <option value="ollama">Ollama (Local Models)</option>
+                        <option value="gemini">Gemini API (Google Cloud)</option>
+                        <option value="custom">Custom (OpenAI-compatible / Omniroute)</option>
+                    </select>
+                </div>
+
+                <!-- API Key (Gemini & Custom only) -->
+                <div id="settings-group-key" class="hidden">
+                    <label class="block text-cyber-muted mb-1.5 font-bold">API KEY</label>
+                    <input id="settings-key" type="password" placeholder="Enter API Key" class="w-full bg-black border border-[#101424] rounded-none px-2.5 py-1.5 text-white focus:outline-none focus:border-[#0066ff] font-mono" />
+                </div>
+
+                <!-- Base URL (Ollama & Custom only) -->
+                <div id="settings-group-url">
+                    <label class="block text-cyber-muted mb-1.5 font-bold">BASE URL</label>
+                    <input id="settings-url" type="text" placeholder="http://localhost:11434" class="w-full bg-black border border-[#101424] rounded-none px-2.5 py-1.5 text-white focus:outline-none focus:border-[#0066ff] font-mono" />
+                </div>
+
+                <!-- Model Name -->
+                <div>
+                    <label class="block text-cyber-muted mb-1.5 font-bold">MODEL NAME</label>
+                    <input id="settings-model" type="text" placeholder="llama3" class="w-full bg-black border border-[#101424] rounded-none px-2.5 py-1.5 text-white focus:outline-none focus:border-[#0066ff] font-mono" />
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3 mt-6">
+                <button id="btn-save-settings" class="flex-1 py-2 bg-[#0066ff] hover:bg-transparent hover:text-[#0066ff] border border-[#0066ff] text-white text-[10px] font-bold rounded-none active:scale-98 transition shadow cursor-pointer">
+                    SAVE CONFIG
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 flex flex-col space-y-2 z-50 pointer-events-none"></div>
+
+    <!-- SCRIPT ENTRY -->
+    <script src="./src/main.ts" type="module"></script>
+</body>
+</html>

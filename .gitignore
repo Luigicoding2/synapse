@@ -1,0 +1,32 @@
+# Rust build artifacts
+target/
+**/*.rs.bk
+Cargo.lock
+
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+
+# Test databases and temporary logs
+target/test_store_db/
+target/test_store_db*/
+synapse_bench_store*
+synapse_go_store_test*
+*.tmp
+*.log
+
+# Node & Frontend
+node_modules/
+dist/
+build/bin/
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
