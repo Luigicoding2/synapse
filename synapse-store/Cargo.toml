@@ -8,6 +8,6 @@ repository = "https://github.com/Luigicoding2/synapse"
 documentation = "https://docs.rs/synapse-store"
 readme = "../README.md"
 keywords = ["database", "lsm-tree", "key-value", "embedded", "storage"]
-categories = ["database-implementations", "data-structures", "embedded-programming"]
+categories = ["database-implementations", "data-structures"]
 
 [dependencies]
