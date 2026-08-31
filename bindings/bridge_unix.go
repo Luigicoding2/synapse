@@ -4,8 +4,8 @@ package synapse
 
 /*
 #cgo CFLAGS: -I${SRCDIR}
-#cgo linux LDFLAGS: -L${SRCDIR}/../target/release -lsynapse_bridge -lm -ldl -lpthread
-#cgo darwin LDFLAGS: -L${SRCDIR}/../target/release -lsynapse_bridge -lm -ldl -lpthread -framework Security -framework CoreFoundation
+#cgo linux LDFLAGS: -L${SRCDIR}/../target/release -Wl,-rpath,${SRCDIR}/../target/release -lsynapse_bridge -lm -ldl -lpthread
+#cgo darwin LDFLAGS: -L${SRCDIR}/../target/release -Wl,-rpath,${SRCDIR}/../target/release -lsynapse_bridge -lm -ldl -lpthread -framework Security -framework CoreFoundation
 #include "bridge.h"
 #include <stdlib.h>
 */

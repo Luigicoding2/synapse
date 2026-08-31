@@ -11,6 +11,7 @@ jobs:
     name: Rust Tests (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
     steps:
@@ -30,6 +31,7 @@ jobs:
     needs: test-rust
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
     steps:
@@ -43,11 +45,22 @@ jobs:
         with:
           go-version: '1.21'
 
-      - name: Build Rust Bridge Libs
+      - name: Build Rust Release Libraries
         run: cargo build --release
 
-      - name: Run Go Tests & Benchmarks
+      - name: Run Go Tests & Benchmarks (Linux/macOS)
+        if: runner.os != 'Windows'
         working-directory: ./bindings
+        env:
+          LD_LIBRARY_PATH: ${{ github.workspace }}/target/release
+          DYLD_LIBRARY_PATH: ${{ github.workspace }}/target/release
         run: |
           go test -v .
           go test -bench=. -benchmem .
+
+      - name: Run Go Tests & Benchmarks (Windows)
+        if: runner.os == 'Windows'
+        working-directory: ./bindings
+        run: |
+          go test -v .
+          go test -bench="." -benchmem .
