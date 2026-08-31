@@ -1,4 +1,4 @@
-# ⚡ Synapse: The High-Performance Systems Trilogy
+#  Synapse: The High Performance Systems Trilogy
 
 <p align="center">
   <a href="https://github.com"><img src="https://img.shields.io/badge/Rust-1.75%2B-orange.svg?style=flat-square&logo=rust" alt="Rust"></a>
